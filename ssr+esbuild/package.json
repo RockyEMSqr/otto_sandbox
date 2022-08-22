@@ -1,0 +1,31 @@
+{
+  "name": "ssresbuild",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "etsc",
+    "start": "node --inspect -r esbuild-register ./server/server.ts",
+    "startasdfgs": "nodemon",
+    "startloader": "node --loader @esbuild-kit/esm-loader ./server/server.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@emsquared/otto_express": "git+https://github.com/RockyEMSqr/otto_express.git",
+    "@preact/preset-vite": "^2.3.0",
+    "preact-render-to-string": "^5.2.2",
+    "vite": "^3.0.9"
+  },
+  "devDependencies": {
+    "@emsquared/otto_preact_form": "git+https://github.com/RockyEMSqr/otto_preact_form.git",
+    "@esbuild-kit/esm-loader": "^2.4.2",
+    "esbuild": "^0.15.5",
+    "esbuild-node-tsc": "^2.0.2",
+    "esbuild-register": "^3.3.3",
+    "nodemon": "^2.0.19",
+    "preact-router": "^4.1.0",
+    "sass": "^1.54.5"
+  }
+}
