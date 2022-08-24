@@ -8,9 +8,16 @@ import 'vite';
 import globals from "./globals";
 import fs from 'fs'
 import path from 'path'
-export async function render(req: Request) {
+export async function render(view:string, req: Request, ctx={}) {
     let url = req.originalUrl;
-    let html = renderToString(<App url={url} />)
+    let viewPath = path.resolve(view);
+    let m = require(viewPath);
+    let comp = null;
+    if(m){
+        comp = m.default;
+    }
+    let context =  {...ctx, user:req.authenticatedUser};
+    let html = renderToString(h(comp, {url:url, ...context}), context)
     try {
         // 1. Read index.html
         let template = fs.readFileSync(
@@ -31,6 +38,7 @@ export async function render(req: Request) {
         //    function calls appropriate framework SSR APIs,
         //    e.g. ReactDOMServer.renderToString()
         // const appHtml = await ret.render(url);
+        template = template.replace('</body>', `<script>var context = ${JSON.stringify(context)}</script></body>`);
         return template;
     } catch (err) {
         console.error(err);
