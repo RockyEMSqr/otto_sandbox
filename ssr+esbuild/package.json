@@ -6,23 +6,23 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "etsc",
-    "start": "node --inspect -r esbuild-register ./server/server.ts",
+    "start": "node --inspect --trace-warnings -r esbuild-register ./server/server.ts",
     "startasdfgs": "nodemon",
-    "startloader": "node --loader @esbuild-kit/esm-loader ./server/server.ts"
+    "startloader": "node --loader @esbuild-kit/esm-loader ./server/server.ts",
+    "tsr": "node --inspect --trace-warnings -r esbuild-register --"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@emsquared/otto_express": "git+https://github.com/RockyEMSqr/otto_express.git",
     "@preact/preset-vite": "^2.3.0",
+    "preact-cli-widget-ts": "git+https://github.com/RockyEMSqr/preact-cli-widget-ts.git",
     "preact-render-to-string": "^5.2.2",
     "vite": "^3.0.9"
   },
   "devDependencies": {
     "@emsquared/otto_preact_form": "git+https://github.com/RockyEMSqr/otto_preact_form.git",
-    "@esbuild-kit/esm-loader": "^2.4.2",
     "esbuild": "^0.15.5",
-    "esbuild-node-tsc": "^2.0.2",
     "esbuild-register": "^3.3.3",
     "nodemon": "^2.0.19",
     "preact-router": "^4.1.0",
