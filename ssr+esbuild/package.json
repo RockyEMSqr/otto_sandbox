@@ -9,7 +9,8 @@
     "start": "node --inspect --trace-warnings -r esbuild-register ./server/server.ts",
     "startasdfgs": "nodemon",
     "startloader": "node --loader @esbuild-kit/esm-loader ./server/server.ts",
-    "tsr": "node --inspect --trace-warnings -r esbuild-register --"
+    "tsr": "node --inspect --trace-warnings -r esbuild-register --",
+    "build": "rm -r _deploy; tsc ; vite build --outDir _deploy/dist"
   },
   "author": "",
   "license": "ISC",

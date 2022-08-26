@@ -5,8 +5,8 @@ export const LoginPage = (p:any) => {
         <pre>{JSON.stringify(p)}</pre>
         {p.errormsg && <h1>{p.errormsg}</h1>}
         <form method="POST">
-            <Text label="username" name="username" />
-            <Password label="password" name="password" />
+            <Text label="username" value="asdf" name="username" />
+            <Password label="password" value="asdfasdfasdfasdf" name="password" />
             <button>Login</button>
         </form>
     </div>

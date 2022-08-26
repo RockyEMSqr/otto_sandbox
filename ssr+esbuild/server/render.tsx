@@ -8,26 +8,34 @@ import 'vite';
 import globals from "./globals";
 import fs from 'fs'
 import path from 'path'
-export async function render(view:string, req: Request, ctx={}) {
+export async function render(view: string, req: Request, ctx = {}) {
     let url = req.originalUrl;
     let viewPath = path.resolve(view);
     let m = require(viewPath);
     let comp = null;
-    if(m){
+    if (m) {
         comp = m.default;
     }
-    let context =  {...ctx, user:req.authenticatedUser};
-    let html = renderToString(h(comp, {url:url, ...context}), context)
+    let context = { ...ctx, user: req.authenticatedUser };
+    let html = renderToString(h(comp, { url: url, ...context }), context)
     try {
+
         // 1. Read index.html
+        // Change index.html path when production?
+        let indexPath = path.resolve('index.html');
+        if (process.env.NODE_ENV = 'prodduction') {
+            indexPath = path.resolve('dist/index.html');
+        }
         let template = fs.readFileSync(
-            path.resolve('index.html'),
+            indexPath,
             'utf-8'
         )
         // 2. Apply Vite HTML transforms. This injects the Vite HMR client, and
         //    also applies HTML transforms from Vite plugins, e.g. global preambles
         //    from @vitejs/plugin-react
-        template = await globals.vite.transformIndexHtml(url, template)
+        if (process.env.NODE_ENV != 'production') {
+            template = await globals.vite.transformIndexHtml(url, template)
+        }
         template = template.replace('App Here', html);
         // 3. Load the server entry. vite.ssrLoadModule automatically transforms
         //    your ESM source code to be usable in Node.js! There is no bundling

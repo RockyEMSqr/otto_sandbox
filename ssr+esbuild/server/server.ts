@@ -3,9 +3,11 @@ import { createServer as createViteServer } from 'vite';
 import globals from './globals';
 import {HomeController} from './controllers/home'
 import {AuthController} from './controllers/auth'
+import express from 'express';
+import path from 'path'
 (async () => {
     let app = oexpress({
-        // publicFolders: ['./dist', './public'],
+        // publicFolders: ['./assets', './public'],
         port: 3000,
         // views: './server/views',
         // useSQliteFileStore: false,
@@ -13,7 +15,7 @@ import {AuthController} from './controllers/auth'
         bodyParserJSONOptions: { limit: '50mb' },
         bodyParserUrlEncodedOptions: { limit: '50mb', parameterLimit: 50000 }
     });
-    
+    app.use('/assets', express.static(path.join(process.cwd(), '/dist/assets')));
     setupController(app, AuthController)
     app.use((req,res, next)=>{
         // @ts-ignore
