@@ -6,7 +6,7 @@ import { render } from "../render";
 export class HomeController {
     @Get('/page*')
     async home(req: Request, res: Response) {
-        let html = await render('./wui/app', req);
+        let html = await render('./wui/main', req);
         res.send(html)
         // res.render('app', {locals:{}})
     }

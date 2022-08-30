@@ -7,7 +7,12 @@ import type { Request } from 'express';
 import 'vite';
 import globals from "./globals";
 import fs from 'fs'
-import path from 'path'
+import path from 'path';
+function renderMyHtml(template: string, params: Object) {
+    const names = Object.keys(params);
+    const vals = Object.values(params);
+    return new Function(...names, `return \`${template}\`;`)(...vals);
+}
 export async function render(view: string, req: Request, ctx = {}) {
     let url = req.originalUrl;
     let viewPath = path.resolve(view);
@@ -23,9 +28,6 @@ export async function render(view: string, req: Request, ctx = {}) {
         // 1. Read index.html
         // Change index.html path when production?
         let indexPath = path.resolve('index.html');
-        if (process.env.NODE_ENV = 'prodduction') {
-            indexPath = path.resolve('dist/index.html');
-        }
         let template = fs.readFileSync(
             indexPath,
             'utf-8'
@@ -36,17 +38,32 @@ export async function render(view: string, req: Request, ctx = {}) {
         if (process.env.NODE_ENV != 'production') {
             template = await globals.vite.transformIndexHtml(url, template)
         }
-        template = template.replace('App Here', html);
-        // 3. Load the server entry. vite.ssrLoadModule automatically transforms
-        //    your ESM source code to be usable in Node.js! There is no bundling
-        //    required, and provides efficient invalidation similar to HMR.
-        // const ret = await globals.vite.ssrLoadModule('./wui/main.tsx')
+        let file = view.replace('./', '') + '.tsx';// assuming .tsx
+        let jsfiles = [];
+        let stylePath = '/wui/style.scss';
+        if (process.env.NODE_ENV == 'production') {
+            let manifest = require(path.join(process.cwd(), 'dist', 'manifest.json'));
+            stylePath = '/' + manifest["wui/style.scss"].file;
+            let jsMan = manifest[file];
+            if (jsMan.imports) {
+                for (let r of jsMan.imports) {
+                    jsfiles.push(manifest[r].file);
+                }
+            }
+            jsfiles.push(jsMan.file);
+        } else {
+            jsfiles = [file];
+        }
+        template = renderMyHtml(template, {
+            html: html,
+            title: 'SSR',
+            stylesheet: stylePath
+        });
 
-        // 4. render the app HTML. This assumes entry-server.js's exported `render`
-        //    function calls appropriate framework SSR APIs,
-        //    e.g. ReactDOMServer.renderToString()
-        // const appHtml = await ret.render(url);
-        template = template.replace('</body>', `<script>var context = ${JSON.stringify(context)}</script></body>`);
+        let scripts = jsfiles.map(x => `<script type="module" src="/${x}"></script>`).join('')
+        template = template.replace('</body>', `<script>var context = ${JSON.stringify(context)}</script>
+        ${scripts}
+        </body>`);
         return template;
     } catch (err) {
         console.error(err);

@@ -10,7 +10,8 @@
     "startasdfgs": "nodemon",
     "startloader": "node --loader @esbuild-kit/esm-loader ./server/server.ts",
     "tsr": "node --inspect --trace-warnings -r esbuild-register --",
-    "build": "rm -r _deploy; tsc ; vite build --outDir _deploy/dist"
+    "build": "rm -r _deploy; tsc ; vite build --outDir _deploy/dist; cp index.html _deploy/",
+    "prod": "pushd _deploy; NODE_ENV=production node --inspect server/server.js"
   },
   "author": "",
   "license": "ISC",
